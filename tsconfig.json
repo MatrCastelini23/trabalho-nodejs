@@ -1,0 +1,47 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    // File Layout
+    // "rootDir": "./src",
+    // "outDir": "./dist",
+
+    // Environment Settings
+    // See also https://aka.ms/tsconfig/module
+    "module": "nodenext",
+    "target": "es2020", //alterado para es2020 para usar recursos mais recentes do JavaScript, como async/await, que são usados no código do servidor
+    "types": ["node"], //adicionado para que o TypeScript reconheça os tipos do Node.js, como Express, que são usados no código do servidor
+    // For nodejs:
+    // "lib": ["esnext"],
+    // "types": ["node"],
+    // and npm install -D @types/node
+
+    // Other Outputs
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Style Options
+    // "noImplicitReturns": true,
+    // "noImplicitOverride": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noFallthroughCasesInSwitch": true,
+    // "noPropertyAccessFromIndexSignature": true,
+
+    // Recommended Options
+    "strict": true,
+    "jsx": "react-jsx",
+    "verbatimModuleSyntax": false, // Set to false to allow TypeScript to perform type checking across modules, which is necessary for features like decorators used in TypeORM
+    "isolatedModules": false, // Set to false to allow TypeScript to perform type checking across modules, which is necessary for features like decorators used in TypeORM
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+    //typeORM
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+  }
+}
