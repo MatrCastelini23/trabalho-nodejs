@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -17,10 +17,10 @@ export class User {
     @Column({ type: "int" })
     idade: number | undefined;
 
-    @Column({ type: "datetime" })
+    @CreateDateColumn({ type: "datetime" })
     createdAt: Date | undefined;
 
-    @Column({ type: "datetime" })
+    @CreateDateColumn({ type: "datetime" })
     updatedAt: Date | undefined;
 }
 
