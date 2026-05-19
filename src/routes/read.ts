@@ -2,10 +2,16 @@ import { Request, Response } from 'express';
 import { AppDataSource } from '../banco/connection.js';
 import { User } from '../entity/User.js';
 import { userSchema } from '../schemas/userSchema.js';
-import { ParsedQs } from 'qs';
 
 export async function lerUsuarios(req: Request, res: Response) {
     try {
+        const parsed = userSchema.partial().safeParse(req.query);
+        if (!parsed.success) {
+            return res.status(409).json({
+                error: "Dados inválidos",
+                details: parsed.error.flatten()
+            });
+        }
         const userRepository = AppDataSource.getRepository(User);
         const usuarios = await userRepository.find({
             select: ["nome", "email", "createdAt", "updatedAt"]    
