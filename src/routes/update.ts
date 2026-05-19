@@ -5,6 +5,9 @@ import { userSchema } from '../schemas/userSchema.js';
 
 export async function atualizarUsuario(req: Request<{id: string}>, res: Response) {
     const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "ID inválido" });
+    }
     const parsed = userSchema.partial().safeParse(req.body);
     if (!parsed.success) {
         return res.status(400).json({
