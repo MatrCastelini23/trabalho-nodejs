@@ -1,17 +1,22 @@
-import { response, request } from 'express';
+import { Response, Request } from 'express';
 import { AppDataSource } from '../banco/connection.js';
 import { User } from '../entity/User.js';
-import { Request, Response } from 'express-serve-static-core';
-import { ParsedQs } from 'qs';
+import { userSchema } from '../schemas/userSchema.js';
 
-export const atualizarUsuario = async (req: Request<{ id: string; }, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>, number>) => {
+export async function atualizarUsuario(req: Request<{id: string}>, res: Response) {
     const id = parseInt(req.params.id);
-    const { nome, email, idade } = req.body;
+    const parsed = userSchema.partial().safeParse(req.body);
+    if (!parsed.success) {
+        return res.status(400).json({
+            error: "Dados inválidos",
+            details: parsed.error.flatten()
+        });
+    }
+    const { nome, email, idade } = parsed.data;
     try {
         await AppDataSource.getRepository(User).update(id, { nome, email, idade });
-        res.status(200).json({ message: "Usuário atualizado com sucesso" });
+        return res.status(200).json({ message: "Usuário atualizado com sucesso" });
     } catch (error) {
-        res.status(500).json({ message: "Erro ao atualizar usuário" });
+        return res.status(500).json({ message: "Erro ao atualizar usuário" });
     }
-
 }
