@@ -15,21 +15,13 @@ server.use(express.json()); //configurando o express para usar o JSON, para que 
 
 server.post("/create", criarUsuario); //definindo a rota POST /create, que chama a função criarUsuario para criar um novo usuário no banco de dados
 
-server.get("/read", (req, res) => {
-    lerUsuarios(req, res);
-}); //definindo a rota GET /read, que chama a função lerUsuarios para ler os usuários do banco de dados
+server.get("/read", lerUsuarios) //chama a função para ler todos os usuarios
+ 
+server.get("/read/:id", lerUsuarioPorId) //chama a função para ler um usuario apenas
 
-server.get("/read/:id", (req, res) => {
-    lerUsuarioPorId(req, res);
-}); //definindo a rota GET /read/:id, que chama a função lerUsuarioPorId para ler um usuário específico do banco de dados
+server.put("/update/:id", atualizarUsuario); //chama a função para atualizar um usuario
 
-server.put("/update/:id", (req, res) => {
-    atualizarUsuario(req, res);
-});
-
-server.delete("/delete/:id", (req, res) => {
-    deletarUsuario(req, res);
-});
+server.delete("/delete/:id", deletarUsuario); //chama a função para deletar um usuario
 
 AppDataSource.initialize() //inicializando a conexão com o banco de dados, usando a função initialize do Typeorm, que retorna uma promise, e é usada para estabelecer a conexão com o banco de dados antes de iniciar o servidor
     .then(() => {

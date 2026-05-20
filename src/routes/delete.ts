@@ -4,10 +4,7 @@ import { User } from '../entity/User.js';
 import { userSchema } from '../schemas/userSchema.js';
 
 export async function deletarUsuario(req: Request<{id: string}>, res: Response) {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-        return res.status(400).json({ error: "ID inválido" });
-    }
+    const id = req.params.id;
     try {
         const userRepository = AppDataSource.getRepository(User);
         const usuario = await userRepository.findOne({

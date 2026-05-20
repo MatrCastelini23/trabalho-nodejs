@@ -1,27 +1,27 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity()
+@Entity('users') // É uma boa prática definir explicitamente o nome da tabela em plural
 export class User {
-    @PrimaryGeneratedColumn()
-    id: number | undefined;
+    @PrimaryGeneratedColumn({ type: 'int' })
+    id!: number; // Usado '!' para evitar erros de inicialização do TypeScript
 
-    @Column({ type: "varchar" })
-    nome: string | undefined;
+    @Column({ type: "varchar", length: 100 })
+    nome!: string;
 
-    @Column({ type: "varchar" })
-    email: string | undefined;
+    @Column({ type: "varchar", length: 100, unique: true })
+    email!: string; 
 
-    @Column({ type: "varchar" })
-    senha: string | undefined;
+    @Column({ type: "varchar", length: 100,})
+    senha!: string;
 
     @Column({ type: "int" })
-    idade: number | undefined;
+    idade!: number;
 
-    @CreateDateColumn({ type: "datetime" })
-    createdAt: Date | undefined;
+    @CreateDateColumn({ type: "datetime" }) // Mude para "timestamp" se usar PostgreSQL
+    createdAt!: Date;
 
-    @CreateDateColumn({ type: "datetime" })
-    updatedAt: Date | undefined;
+    @UpdateDateColumn({ type: "datetime" })
+    updatedAt!: Date;
 }
 
 export default User;
