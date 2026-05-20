@@ -1,10 +1,13 @@
 import { Response, Request } from 'express';
 import { AppDataSource } from '../banco/connection.js';
 import { User } from '../entity/User.js';
-import { userSchema } from '../schemas/userSchema.js';
 
 export async function deletarUsuario(req: Request<{id: string}>, res: Response) {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
+    // Validação do ID
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "ID inválido" });
+    }
     try {
         const userRepository = AppDataSource.getRepository(User);
         const usuario = await userRepository.findOne({

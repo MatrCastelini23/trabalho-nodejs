@@ -31,6 +31,6 @@ AppDataSource.initialize() //inicializando a conexão com o banco de dados, usan
         console.error("Erro ao estabelecer conexão com o banco de dados:", error); //exibe uma mensagem de erro no console caso haja um erro ao estabelecer a conexão com o banco de dados
     });
 
-server.listen(process.env.PORT, () => {
+server.listen(process.env.PORT ?? 3000, () => {
     console.log(`Servidor rodando na porta ${process.env.PORT}`); //exibe uma mensagem no console indicando que o servidor está rodando na porta especificada
 });
