@@ -2,7 +2,6 @@ import { Response, Request } from 'express';
 import { AppDataSource } from '../banco/connection.js';
 import { User } from '../entity/User.js';
 import { userSchema } from '../schemas/userSchema.js';
-import { parse } from 'node:path';
 
 export const atualizarUsuario = async (req: Request<{ id: string }>, res: Response) => {
     const id = parseInt(req.params.id);
