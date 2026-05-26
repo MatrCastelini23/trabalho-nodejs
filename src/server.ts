@@ -2,14 +2,13 @@ import "reflect-metadata"; //importando o reflect-metadata, que é uma bibliotec
 import "dotenv/config"; //importando o dotenv, que é uma biblioteca que permite carregar variáveis de ambiente a partir de um arquivo .env, para configurar a conexão com o banco de dados e outras configurações do servidor
 import express from "express"; //importando o express
 import cors from "cors"; //importando o cors, que é uma biblioteca que permite configurar o CORS (Cross-Origin Resource Sharing) para permitir que o servidor aceite requisições de outros domínios
-import { criarUsuario } from "./routes/create.js"; //importando a função criarUsuario, que é usada para criar um novo usuário no banco de dados, e é chamada na rota POST /create
-import AppDataSource from "./banco/connection.js";
-import { lerUsuarioPorId, lerUsuarios } from "./routes/read.js";
-import { atualizarUsuario } from "./routes/update.js";
-import { deletarUsuario } from "./routes/delete.js";
+import { criarUsuario, lerUsuarios, lerUsuarioPorId, atualizarUsuario, deletarUsuario } from "./routes/routes.js"; //importando a função criarUsuario, que é usada para criar um novo usuário no banco de dados, e é chamada na rota POST /create
+import { AppDataSource } from "./database/connection.js";
+import { errorMiddleware } from "./erros/ErrorMiddleware.js";
 
 
 const server = express();
+const PORT = process.env.PORT; //definindo a porta do servidor, usando a variável de ambiente PORT ou a porta 3000 como padrão
 server.use(cors());
 server.use(express.json()); //configurando o express para usar o JSON, para que possa receber e enviar dados em formato JSON
 
@@ -23,6 +22,8 @@ server.put("/update/:id", atualizarUsuario); //chama a função para atualizar u
 
 server.delete("/delete/:id", deletarUsuario); //chama a função para deletar um usuario
 
+server.use(errorMiddleware); //se a req cair dentro do catch(error) dentro das rotas, o errorMiddleware é chamado. SEMPRE POR ULTIMO DEPOIS DAS ROTAS.
+
 AppDataSource.initialize() //inicializando a conexão com o banco de dados, usando a função initialize do Typeorm, que retorna uma promise, e é usada para estabelecer a conexão com o banco de dados antes de iniciar o servidor
     .then(() => {
         console.log("Conexão com o banco de dados estabelecida com sucesso"); //exibe uma mensagem no console indicando que a conexão com o banco de dados foi estabelecida com sucesso
@@ -31,6 +32,6 @@ AppDataSource.initialize() //inicializando a conexão com o banco de dados, usan
         console.error("Erro ao estabelecer conexão com o banco de dados:", error); //exibe uma mensagem de erro no console caso haja um erro ao estabelecer a conexão com o banco de dados
     });
 
-server.listen(process.env.PORT ?? 3000, () => {
-    console.log(`Servidor rodando na porta ${process.env.PORT}`); //exibe uma mensagem no console indicando que o servidor está rodando na porta especificada
+server.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`); //exibe uma mensagem no console indicando que o servidor está rodando na porta especificada
 });
