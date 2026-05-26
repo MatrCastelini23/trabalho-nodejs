@@ -10,7 +10,9 @@ export async function criarUsuario(req: Request, res: Response, next: NextFuncti
     try{
         // Valida os dados com o Zod
         const { name, email, password, age } = userSchema.parse(req.body); 
+    
         const userRepository = AppDataSource.getRepository(User); // Obtém o repositório da entidade User para realizar operações no banco de dados
+        
         const emailExiste = await userRepository.findOne({ where: { email } }); // Verifica se o email já existe no banco de dados
         if (emailExiste) {
             throw new AppError("Email já possui cadastro", 409); // Lança um erro caso o email já exista, com status code 409 (Conflict)
