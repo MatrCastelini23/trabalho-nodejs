@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express"; //importando os tipos Request e Response do express, para tipar os parâmetros da função criarUsuario
-import { AppDataSource } from "../banco/connection.js";//importando a entidade User para que possa fazer operações no banco de dados
+import { AppDataSource } from "../database/connection.js";//importando a entidade User para que possa fazer operações no banco de dados
 import { User } from "../entity/User.js";//importando a entidade User para que possa ser usada para criar um novo usuário no banco de dados
 import { userSchema } from "../schemas/userSchema.js";
 import { AppError } from "../erros/AppErros.js";
@@ -9,16 +9,14 @@ import { AppError } from "../erros/AppErros.js";
 export async function criarUsuario(req: Request, res: Response, next: NextFunction) { 
     try{
         // Valida os dados com o Zod
-        const { nome, email, senha, idade } = userSchema.parse(req.body); 
-    
+        const { name, email, password, age } = userSchema.parse(req.body); 
         const userRepository = AppDataSource.getRepository(User); // Obtém o repositório da entidade User para realizar operações no banco de dados
-        
         const emailExiste = await userRepository.findOne({ where: { email } }); // Verifica se o email já existe no banco de dados
         if (emailExiste) {
             throw new AppError("Email já possui cadastro", 409); // Lança um erro caso o email já exista, com status code 409 (Conflict)
         }
 
-        const novoUsuario = userRepository.create({ nome, email, senha, idade }); // Cria um novo usuário com os dados validados
+        const novoUsuario = userRepository.create({ name, email, password, age }); // Cria um novo usuário com os dados validados
         await userRepository.save(novoUsuario); // Salva o novo usuário no banco de dados
 
         return res.status(201).json({ message: "Usuario cadastrado com sucesso" }); // Retorna o novo usuário criado com status code 201 (Created)
