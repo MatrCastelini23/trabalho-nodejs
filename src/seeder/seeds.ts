@@ -1,25 +1,41 @@
-import { AppDataSource } from "../banco/connection.js";
-import { Seeder } from 'typeorm-extension';
+import "reflect-metadata";
+import { AppDataSource } from "../database/connection.js";
 import { User } from '../entity/User.js';
 
-export default class UserSeeder implements Seeder {
-    public async run(dataSource: typeof AppDataSource): Promise<void> {
-        const userRepository = dataSource.getRepository(User);
-        // evitar duplicar dados
-        const checkUser = await userRepository.findOneBy({ email: 'castelini@gmail.com' });
-        console.log(checkUser);
-        if (!checkUser) {
-            await userRepository.insert([{
-                name: "Matheus Castelini",
-                email: "castelini@gmail.com",
-                password: "123456",
-                age: 25
-            },{
-                name: "João Silva",
-                email: "jao@gmail.com",
-                password: "123456",
-                age: 30
-            }])
+async function runSeeder() {
+    const userRepository = AppDataSource.getRepository(User);
+    const users = userRepository.create([
+        {
+            name: 'João Silva',
+            email: 'jao@gmail.com',
+            password: '123456',
+            age: 30
+        },
+        {
+            name: 'Matheus Castelini',
+            email: 'castelini@gmail.com',
+            password: '123456',
+            age: 25
         }
-    }   
+    ]);
+    
+    const existingUsers = await userRepository.findBy({email: 'jao@gmail.com'});
+    if (existingUsers.length) {
+        console.log("Usuário já existe, pulando seeder.");
+        return;
+    }else {
+        await userRepository.save(users);
+    }
 }
+
+AppDataSource.initialize()
+    .then(async () => {
+        console.log("Conexão com o banco de dados estabelecida com sucesso");
+        await runSeeder();
+        console.log("Seeders executados com sucesso");
+        process.exit(0); // Encerra o processo após a execução dos seeders
+    })
+    .catch((error) => {
+        console.error("Erro ao estabelecer conexão com o banco de dados:", error);
+        process.exit(1); // Encerra o processo com código de erro
+    });
