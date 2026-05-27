@@ -2,25 +2,16 @@ import "reflect-metadata"; //importando o reflect-metadata, que é uma bibliotec
 import "dotenv/config"; //importando o dotenv, que é uma biblioteca que permite carregar variáveis de ambiente a partir de um arquivo .env, para configurar a conexão com o banco de dados e outras configurações do servidor
 import express from "express"; //importando o express
 import cors from "cors"; //importando o cors, que é uma biblioteca que permite configurar o CORS (Cross-Origin Resource Sharing) para permitir que o servidor aceite requisições de outros domínios
-import { criarUsuario, lerUsuarios, lerUsuarioPorId, atualizarUsuario, deletarUsuario } from "./routes/routes.js"; //importando a função criarUsuario, que é usada para criar um novo usuário no banco de dados, e é chamada na rota POST /create
-import { AppDataSource } from "./database/connection.js";
-import { errorMiddleware } from "./erros/ErrorMiddleware.js";
-
+import { AppDataSource } from "./database/data-source.js";
+import { errorMiddleware } from "./middlewares/ErrorMiddleware.js";
+import routes  from "./routes/routes.js";
 
 const server = express();
 const PORT = process.env.PORT; //definindo a porta do servidor, usando a variável de ambiente PORT ou a porta 3000 como padrão
 server.use(cors());
 server.use(express.json()); //configurando o express para usar o JSON, para que possa receber e enviar dados em formato JSON
 
-server.post("/create", criarUsuario); //definindo a rota POST /create, que chama a função criarUsuario para criar um novo usuário no banco de dados
-
-server.get("/read", lerUsuarios) //chama a função para ler todos os usuarios
- 
-server.get("/read/:id", lerUsuarioPorId) //chama a função para ler um usuario apenas
-
-server.put("/update/:id", atualizarUsuario); //chama a função para atualizar um usuario
-
-server.delete("/delete/:id", deletarUsuario); //chama a função para deletar um usuario
+server.use(routes); 
 
 server.use(errorMiddleware); //se a req cair dentro do catch(error) dentro das rotas, o errorMiddleware é chamado. SEMPRE POR ULTIMO DEPOIS DAS ROTAS.
 

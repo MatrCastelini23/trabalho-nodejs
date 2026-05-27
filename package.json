@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "migration:run": "npx ts-node ./node_modules/typeorm/cli.js migration:run -d src/banco/connection.ts",
     "migration:generate": "npx ts-node ./node_modules/typeorm/cli.js migration:generate -d src/banco/connection.ts",
-    "seed:run": "tsx src/seeder/seeds.ts"
+    "seed:run": "tsx src/database/seeds/seeds.ts"
   },
   "keywords": [],
   "author": "",
