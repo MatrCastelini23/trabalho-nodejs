@@ -41,7 +41,7 @@ export async function deletarUsuario(req: Request<{id: string}>, res: Response, 
         }
 
         await userRepository.remove(user);
-        return res.status(204).json({message: 'Usuário deletado com sucesso'});
+        return res.status(204).send(); // Retorna status code 204 (No Content)
     }catch(error){
         next(error);
     }
