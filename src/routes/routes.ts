@@ -54,13 +54,13 @@ export async function lerUsuarios(req: Request, res: Response, next: NextFunctio
         // Obtém o repositório da entidade User para realizar operações no banco de dados
         const userRepository = AppDataSource.getRepository(User);
         // Constrói a consulta com base nos parâmetros fornecidos
-        const query = userRepository.createQueryBuilder("user");
+        const users = await userRepository.createQueryBuilder("user").select(["user.name", "user.email", "user.age"]).getMany();
 
-        if (!query){
+        if (!users) {
             throw new AppError("Nenhum usuário encontrado", 404);
         }
 
-        return res.status(200).json({message: "Usuários encontrados", data: await query.getMany()}); // Retorna a lista de usuários encontrados com status code 200 (OK)
+        return res.status(200).json({message: "Usuários encontrados", data: await users}); // Retorna a lista de usuários encontrados com status code 200 (OK)
     }catch(error){
         next(error);
     }
@@ -71,11 +71,11 @@ export async function lerUsuarioPorId(req: Request<{id: string}>, res: Response,
     try{
         const id = parseInt(req.params.id);
         const userRepository = AppDataSource.getRepository(User);
-        const usuario = await userRepository.findOne({ where: { id } });
-        if (!usuario){
+        const user = await userRepository.createQueryBuilder("user").select(["user.name", "user.email", "user.age"]).where("user.id = :id", { id }).getOne( );
+        if (!user) {
             throw new AppError("Usuário não encontrado", 404);
         }
-        return res.status(200).json({message: "Usuário encontrado", data: usuario});
+        return res.status(200).json({message: "Usuário encontrado", data: user});
     }catch(error){
         next(error);
     }
